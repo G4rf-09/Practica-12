@@ -1,0 +1,212 @@
+/* =========================================================
+   Games - Estilos
+   ========================================================= */
+
+
+/* ---------- Colores ---------- */
+:root {
+  --rojo: #e60012;
+  --rojo-oscuro: #b8000e;
+  --oscuro: #1b1b1f;
+  --gris-fondo: #f4f5f7;
+}
+
+body {
+  background-color: var(--gris-fondo);
+}
+
+
+/* ---------- Botón y textos en rojo ---------- */
+.btn-rojo {
+  background-color: var(--rojo);
+  border-color: var(--rojo);
+  color: white;
+}
+
+.btn-rojo:hover,
+.btn-rojo:focus {
+  background-color: var(--rojo-oscuro);
+  border-color: var(--rojo-oscuro);
+  color: white;
+}
+
+.texto-rojo {
+  color: var(--rojo);
+}
+
+
+/* ---------- Menú ---------- */
+.navbar {
+  background-color: var(--oscuro);
+}
+
+.navbar-brand {
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.navbar-brand i {
+  color: var(--rojo);
+}
+
+.navbar .nav-link.active {
+  color: var(--rojo) !important;
+}
+
+
+/* ---------- Portada (inicio) ---------- */
+.portada {
+  background: linear-gradient(135deg, var(--rojo) 0%, #8a000b 100%);
+  color: white;
+  padding: 70px 0;
+}
+
+.portada h1 {
+  font-weight: 800;
+  font-size: 2.8rem;
+}
+
+.portada img {
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+
+/* ---------- Secciones ---------- */
+.seccion {
+  padding: 60px 0;
+}
+
+.seccion-blanca {
+  background-color: white;
+}
+
+.titulo-seccion {
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.linea-roja {
+  width: 60px;
+  height: 4px;
+  background-color: var(--rojo);
+  margin: 0 auto 30px auto;
+}
+
+/* Tarjetas de categorías, misión y visión */
+.tarjeta-info {
+  border: none;
+  border-top: 4px solid var(--rojo);
+}
+
+.icono-grande {
+  font-size: 2.5rem;
+  color: var(--rojo);
+}
+
+
+/* ---------- Catálogo ---------- */
+.tarjeta-producto {
+  border: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.tarjeta-producto:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+.tarjeta-producto img {
+  height: 190px;
+  object-fit: contain;
+  background-color: white;
+  padding: 10px;
+}
+
+.contenedor-imagen {
+  position: relative;
+  border-bottom: 1px solid #eee;
+}
+
+/* Etiqueta de plataforma encima de la imagen */
+.etiqueta-plataforma {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.precio {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--rojo);
+}
+
+.descripcion-producto {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+/* Producto agotado */
+.agotado img {
+  filter: grayscale(100%);
+  opacity: 0.5;
+}
+
+/* Botones de filtro por categoría */
+.filtros .btn {
+  margin: 0 6px 8px 0;
+}
+
+
+/* ---------- Colores por plataforma ---------- */
+.plataforma-nintendo {
+  background-color: var(--rojo);
+}
+
+.plataforma-playstation {
+  background-color: #0070d1;
+}
+
+.plataforma-xbox {
+  background-color: #107c10;
+}
+
+.plataforma-multiplataforma {
+  background-color: #6c757d;
+}
+
+
+/* ---------- Login ---------- */
+.fondo-login {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--oscuro) 0%, #3a0005 100%);
+}
+
+.caja-login {
+  max-width: 400px;
+  width: 100%;
+}
+
+
+/* ---------- Admin ---------- */
+.tabla-admin img {
+  width: 60px;
+  height: 45px;
+  object-fit: contain;
+  background-color: white;
+}
+
+
+/* ---------- Pie de página ---------- */
+footer {
+  background-color: var(--oscuro);
+  color: #adb5bd;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #adb5bd;
+}
