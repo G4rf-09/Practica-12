@@ -1,27 +1,15 @@
-// =========================================================
-// Panel de administración (CRUD de productos)
-// =========================================================
-
-// Productos que llegan de la API
 let productos = [];
 
-// Elementos de la página
 const tabla = document.getElementById("tablaProductos");
 const buscador = document.getElementById("buscador");
 const formulario = document.getElementById("formProducto");
 const modal = new bootstrap.Modal(document.getElementById("modalProducto"));
 
-
-// Cierra la sesión y vuelve al login
 function cerrarSesion() {
   sessionStorage.removeItem("sesionAdmin");
   window.location.href = "login.html";
 }
 
-
-// =========================================================
-// Cargar las categorías en el select del formulario
-// =========================================================
 async function cargarCategorias() {
   const select = document.getElementById("categoria");
 
@@ -38,10 +26,6 @@ async function cargarCategorias() {
   }
 }
 
-
-// =========================================================
-// LEER: listar productos (GET)
-// =========================================================
 async function listarProductos() {
   try {
     const respuesta = await fetch(API_PRODUCTOS);
@@ -53,8 +37,6 @@ async function listarProductos() {
   }
 }
 
-
-// Calcula los números del resumen
 function mostrarResumen() {
   let unidades = 0;
   let agotados = 0;
@@ -71,8 +53,6 @@ function mostrarResumen() {
   document.getElementById("totalAgotados").textContent = agotados;
 }
 
-
-// Filtra la tabla con el texto del buscador
 function filtrarTabla() {
   const texto = buscador.value.toLowerCase();
 
@@ -85,8 +65,6 @@ function filtrarTabla() {
 
 buscador.addEventListener("input", filtrarTabla);
 
-
-// Dibuja las filas de la tabla
 function mostrarTabla(lista) {
   tabla.innerHTML = "";
 
@@ -96,7 +74,6 @@ function mostrarTabla(lista) {
   }
 
   lista.forEach(function (producto) {
-    // Color del stock: rojo si está agotado, amarillo si quedan pocos
     let claseStock = "text-bg-success";
     if (producto.stock <= 0) {
       claseStock = "text-bg-danger";
@@ -125,10 +102,6 @@ function mostrarTabla(lista) {
   });
 }
 
-
-// =========================================================
-// Abrir el modal para crear o editar
-// =========================================================
 function abrirModalNuevo() {
   formulario.reset();
   document.getElementById("id").value = "";
@@ -154,8 +127,6 @@ function abrirModalEditar(id) {
   modal.show();
 }
 
-
-// Lee los datos del formulario
 function obtenerDatosFormulario() {
   return {
     nombre: document.getElementById("nombre").value,
@@ -168,8 +139,6 @@ function obtenerDatosFormulario() {
   };
 }
 
-
-// Al guardar: si no hay id es nuevo, si hay id se edita
 formulario.addEventListener("submit", function (evento) {
   evento.preventDefault();
 
@@ -183,10 +152,6 @@ formulario.addEventListener("submit", function (evento) {
   }
 });
 
-
-// =========================================================
-// CREAR producto (POST)
-// =========================================================
 async function crearProducto(datos) {
   try {
     await fetch(API_PRODUCTOS, {
@@ -201,10 +166,6 @@ async function crearProducto(datos) {
   }
 }
 
-
-// =========================================================
-// EDITAR producto (PUT)
-// =========================================================
 async function editarProducto(id, datos) {
   try {
     await fetch(API_PRODUCTOS + "/" + id, {
@@ -219,10 +180,6 @@ async function editarProducto(id, datos) {
   }
 }
 
-
-// =========================================================
-// ELIMINAR producto (DELETE)
-// =========================================================
 async function eliminarProducto(id) {
   const confirmar = confirm("¿Seguro que deseas eliminar este producto?");
   if (!confirmar) {
@@ -236,7 +193,6 @@ async function eliminarProducto(id) {
     alert("No se pudo eliminar el producto.");
   }
 }
-
 
 cargarCategorias();
 listarProductos();

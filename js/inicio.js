@@ -1,8 +1,3 @@
-// =========================================================
-// Página de inicio
-// =========================================================
-
-// Muestra las categorías guardadas en MockAPI
 async function cargarCategorias() {
   const contenedor = document.getElementById("listaCategorias");
 
@@ -16,10 +11,10 @@ async function cargarCategorias() {
       contenedor.innerHTML += `
         <div class="col-sm-6 col-lg-3">
           <a href="catalogo.html?categoria=${encodeURIComponent(categoria.nombre)}" class="text-decoration-none text-dark">
-            <div class="card tarjeta-info h-100 shadow-sm">
+            <div class="card tarjeta-categoria h-100 shadow-sm">
               <div class="card-body p-4">
-                <i class="bi ${categoria.icono} icono-grande"></i>
-                <h3 class="h5 mt-2">${categoria.nombre}</h3>
+                <div class="circulo-icono"><i class="bi ${categoria.icono}"></i></div>
+                <h3 class="h5 mt-3">${categoria.nombre}</h3>
                 <p class="small text-muted mb-0">${categoria.descripcion}</p>
               </div>
             </div>
@@ -32,13 +27,10 @@ async function cargarCategorias() {
   }
 }
 
-
-// Formulario de contacto: solo muestra un mensaje de confirmación
 document.getElementById("formContacto").addEventListener("submit", function (evento) {
   evento.preventDefault();
   document.getElementById("avisoContacto").classList.remove("d-none");
   this.reset();
 });
-
 
 cargarCategorias();

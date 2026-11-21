@@ -1,66 +1,70 @@
-// =========================================================
-// Catálogo de productos
-// =========================================================
-
-// Lista de productos que llega de la API
 let productos = [];
 
-// Categoría elegida en los filtros ("Todos" muestra todo)
-let categoriaActual = "Todos";
+let categorias = [];
 
-// Elementos de la página
+let plataformaActual = "Todas";
+let categoriaActual = "Todas";
+
+const PLATAFORMAS = ["Todas", "Nintendo", "PlayStation", "Xbox"];
+
 const contenedor = document.getElementById("listaProductos");
 const mensaje = document.getElementById("mensaje");
 const buscador = document.getElementById("buscador");
 const aviso = document.getElementById("aviso");
 
-
-// =========================================================
-// Cargar categorías y armar los botones de filtro
-// =========================================================
-async function cargarFiltros() {
-  const filtros = document.getElementById("filtros");
-
-  // Si se llegó desde el inicio con ?categoria=..., se usa esa categoría
-  const parametros = new URLSearchParams(window.location.search);
-  if (parametros.get("categoria")) {
-    categoriaActual = parametros.get("categoria");
-  }
-
-  try {
-    const respuesta = await fetch(API_CATEGORIAS);
-    const categorias = await respuesta.json();
-
-    // Primero el botón "Todos" y después uno por cada categoría
-    const nombres = ["Todos"];
-    categorias.forEach(function (categoria) {
-      nombres.push(categoria.nombre);
-    });
-
-    filtros.innerHTML = "";
-    nombres.forEach(function (nombre) {
-      let clase = "btn btn-outline-dark btn-sm";
-      if (nombre === categoriaActual) {
-        clase = "btn btn-rojo btn-sm";
-      }
-      filtros.innerHTML += `<button class="${clase}" onclick="elegirCategoria('${nombre}')">${nombre}</button>`;
-    });
-  } catch (error) {
-    filtros.innerHTML = "";
-  }
+const parametros = new URLSearchParams(window.location.search);
+if (parametros.get("plataforma")) {
+  plataformaActual = parametros.get("plataforma");
+}
+if (parametros.get("categoria")) {
+  categoriaActual = parametros.get("categoria");
 }
 
-// Cambia la categoría elegida y vuelve a dibujar
-function elegirCategoria(nombre) {
-  categoriaActual = nombre;
-  cargarFiltros();
+function dibujarBotones(idContenedor, opciones, elegida, funcion) {
+  const caja = document.getElementById(idContenedor);
+  caja.innerHTML = "";
+
+  opciones.forEach(function (opcion) {
+    let clase = "btn btn-outline-dark btn-sm";
+    if (opcion === elegida) {
+      clase = "btn btn-rojo btn-sm";
+    }
+    caja.innerHTML += `<button class="${clase}" onclick="${funcion}('${opcion}')">${opcion}</button>`;
+  });
+}
+
+function dibujarFiltros() {
+  dibujarBotones("filtrosPlataforma", PLATAFORMAS, plataformaActual, "elegirPlataforma");
+  dibujarBotones("filtrosCategoria", ["Todas"].concat(categorias), categoriaActual, "elegirCategoria");
+}
+
+function elegirPlataforma(nombre) {
+  plataformaActual = nombre;
+  dibujarFiltros();
   aplicarFiltros();
 }
 
+function elegirCategoria(nombre) {
+  categoriaActual = nombre;
+  dibujarFiltros();
+  aplicarFiltros();
+}
 
-// =========================================================
-// Cargar productos desde MockAPI
-// =========================================================
+async function cargarCategorias() {
+  try {
+    const respuesta = await fetch(API_CATEGORIAS);
+    const datos = await respuesta.json();
+
+    categorias = [];
+    datos.forEach(function (categoria) {
+      categorias.push(categoria.nombre);
+    });
+  } catch (error) {
+    categorias = [];
+  }
+  dibujarFiltros();
+}
+
 async function cargarProductos() {
   mensaje.textContent = "Cargando productos...";
 
@@ -73,15 +77,14 @@ async function cargarProductos() {
   }
 }
 
-
-// Filtra por categoría y por el texto del buscador
 function aplicarFiltros() {
   const texto = buscador.value.toLowerCase();
 
   const filtrados = productos.filter(function (producto) {
     const coincideNombre = producto.nombre.toLowerCase().includes(texto);
-    const coincideCategoria = categoriaActual === "Todos" || producto.categoria === categoriaActual;
-    return coincideNombre && coincideCategoria;
+    const coincidePlataforma = plataformaActual === "Todas" || producto.plataforma === plataformaActual;
+    const coincideCategoria = categoriaActual === "Todas" || producto.categoria === categoriaActual;
+    return coincideNombre && coincidePlataforma && coincideCategoria;
   });
 
   mostrarProductos(filtrados);
@@ -89,10 +92,6 @@ function aplicarFiltros() {
 
 buscador.addEventListener("input", aplicarFiltros);
 
-
-// =========================================================
-// Dibujar las tarjetas
-// =========================================================
 function mostrarProductos(lista) {
   contenedor.innerHTML = "";
 
@@ -100,20 +99,20 @@ function mostrarProductos(lista) {
     mensaje.textContent = "No se encontraron productos.";
     return;
   }
-  mensaje.textContent = "";
+  mensaje.textContent = lista.length + " productos encontrados";
 
   lista.forEach(function (producto) {
     const agotado = producto.stock <= 0;
 
-    // Texto del stock según la cantidad
-    let textoStock = `<span class="text-success fw-semibold">${producto.stock} disponibles</span>`;
+    let textoStock = `<span class="badge rounded-pill text-bg-success">${producto.stock} disponibles</span>`;
     if (agotado) {
-      textoStock = '<span class="badge text-bg-dark">Agotado</span>';
+      textoStock = '<span class="badge rounded-pill text-bg-dark">Agotado</span>';
+    } else if (producto.stock === 1) {
+      textoStock = '<span class="badge rounded-pill text-bg-danger">¡Última unidad!</span>';
     } else if (producto.stock <= 3) {
-      textoStock = `<span class="text-danger fw-semibold">¡Últimas ${producto.stock} unidades!</span>`;
+      textoStock = `<span class="badge rounded-pill text-bg-warning">Quedan ${producto.stock}</span>`;
     }
 
-    // Zona de compra: cantidad + botón (o botón desactivado si está agotado)
     let zonaCompra = `
       <div class="input-group input-group-sm">
         <input type="number" id="cantidad-${producto.id}" class="form-control" value="1" min="1" max="${producto.stock}">
@@ -126,8 +125,7 @@ function mostrarProductos(lista) {
       zonaCompra = '<button class="btn btn-secondary btn-sm w-100" disabled>Sin stock</button>';
     }
 
-    // Clase de color para la plataforma (ej: "plataforma-nintendo")
-    const clasePlataforma = "plataforma-" + producto.plataforma.toLowerCase();
+    const plataforma = producto.plataforma.toLowerCase();
 
     let claseTarjeta = "card h-100 shadow-sm tarjeta-producto";
     if (agotado) {
@@ -137,18 +135,20 @@ function mostrarProductos(lista) {
     contenedor.innerHTML += `
       <div class="col">
         <div class="${claseTarjeta}">
-          <div class="contenedor-imagen">
-            <img src="${producto.imagenUrl}" class="card-img-top" alt="${producto.nombre}"
+          <div class="contenedor-imagen zona-${plataforma}">
+            <img src="${producto.imagenUrl}" alt="${producto.nombre}"
                  onerror="this.src='${IMAGEN_RESPALDO}'">
-            <span class="badge etiqueta-plataforma ${clasePlataforma}">${producto.plataforma}</span>
+            <span class="badge etiqueta-plataforma plataforma-${plataforma}">${producto.plataforma}</span>
           </div>
           <div class="card-body d-flex flex-column">
             <small class="text-muted">${producto.categoria}</small>
             <h5 class="card-title fw-bold">${producto.nombre}</h5>
             <p class="descripcion-producto">${producto.descripcion}</p>
             <div class="mt-auto">
-              <p class="precio mb-1">${formatoPrecio(producto.precio)}</p>
-              <p class="small mb-2"><i class="bi bi-box-seam"></i> ${textoStock}</p>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="precio">${formatoPrecio(producto.precio)}</span>
+                ${textoStock}
+              </div>
               ${zonaCompra}
             </div>
           </div>
@@ -158,10 +158,6 @@ function mostrarProductos(lista) {
   });
 }
 
-
-// =========================================================
-// Comprar: resta la cantidad al stock (PUT)
-// =========================================================
 async function comprar(id) {
   const cantidad = Number(document.getElementById("cantidad-" + id).value);
 
@@ -171,7 +167,6 @@ async function comprar(id) {
   }
 
   try {
-    // Se consulta el producto otra vez para tener el stock más reciente
     const respuesta = await fetch(API_PRODUCTOS + "/" + id);
     const producto = await respuesta.json();
 
@@ -189,7 +184,6 @@ async function comprar(id) {
       return;
     }
 
-    // Nuevo stock = stock actual - cantidad comprada
     const nuevoStock = producto.stock - cantidad;
 
     await fetch(API_PRODUCTOS + "/" + id, {
@@ -205,14 +199,11 @@ async function comprar(id) {
   }
 }
 
-
-// Muestra un aviso de color arriba de los productos
 function mostrarAviso(texto, tipo) {
   aviso.className = "alert alert-" + tipo;
   aviso.textContent = texto;
-  window.scrollTo(0, 0);
+  aviso.scrollIntoView({ behavior: "smooth" });
 }
 
-
-cargarFiltros();
+cargarCategorias();
 cargarProductos();
