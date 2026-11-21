@@ -1,12 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
-  <!-- Carcasa del disco UMD -->
   <path d="M80 110 Q80 70 120 70 H280 Q320 70 320 110 V300 Q320 330 290 330 H110 Q80 330 80 300 Z" fill="#2b2f3a"/>
-  <!-- Disco visible -->
   <circle cx="200" cy="200" r="105" fill="#c7cdd8"/>
   <circle cx="200" cy="200" r="105" fill="url(#brillo)"/>
   <circle cx="200" cy="200" r="30" fill="#2b2f3a"/>
   <circle cx="200" cy="200" r="12" fill="#c7cdd8"/>
-  <!-- Etiqueta -->
   <rect x="110" y="285" width="180" height="30" rx="6" fill="#0070d1"/>
   <text x="200" y="307" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">UMD</text>
   <defs>
